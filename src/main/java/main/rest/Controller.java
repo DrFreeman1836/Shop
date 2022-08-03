@@ -1,5 +1,6 @@
 package main.rest;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import main.repository.ListRepository;
 import main.repository.ProductRepository;
@@ -22,11 +23,11 @@ public class Controller {
 
   private final ListManagerService listService;
 
-  private final ListRepository listRepository;
+  private final ListRepository listRepository;//delete
 
-  private final ProductRepository productRepository;
+  private final ProductRepository productRepository;//delete
 
-  @PostMapping("product")
+  @PostMapping("/product")
   public ResponseEntity<?> addProduct(
       @RequestParam(name = "name") String name,
       @RequestParam(name = "description") String description,
@@ -38,7 +39,7 @@ public class Controller {
     return ResponseEntity.status(500).build();
   }
 
-  @PostMapping("list")
+  @PostMapping("/list")
   public ResponseEntity<?> addList(@RequestParam(name = "name") String name) {
     String id = listService.addList(name);
     if (id != null) {
@@ -47,23 +48,35 @@ public class Controller {
     return ResponseEntity.status(500).build();
   }
 
-  @PutMapping()
-  public ResponseEntity<?> addProductInList() {
-    return null;
+  @PutMapping("/list")
+  public ResponseEntity<?> addProductInList(
+      @RequestParam(name = "nameProduct") String nameProduct,
+      @RequestParam(name = "nameList") String nameList) {
+
+    String result = listService.addProductInList(nameList, nameProduct);
+    if(result.equals("invalid name specified")){
+      return ResponseEntity.status(500).body(result);
+    }
+    if(result.equals("list size is exceeded")){
+      return ResponseEntity.status(500).body(result);
+    }
+    return ResponseEntity.ok().body(result);
   }
 
-  @GetMapping("product")
+  @GetMapping("/product")
   public ResponseEntity<?> getProducts() {
-    return null;
+    return ResponseEntity.ok().body(Map.of("products", productService.getListProducts()));
   }
 
-  @GetMapping("list")
-  public ResponseEntity<?> getLists() {
-    return null;
+  @GetMapping("/list")
+  public ResponseEntity<?> getLists(@RequestParam(name = "name") String name) {
+    return ResponseEntity.ok().body(Map.of("list", listService.getList(name)));
   }
 
-  @GetMapping("test")
+  @GetMapping("/test")
   public void test() {
+    //productRepository.deleteAll();
+    //listRepository.deleteAll();
     listRepository.findAll().forEach(System.out::println);
     productRepository.findAll().forEach(System.out::println);
   }

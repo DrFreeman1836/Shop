@@ -1,5 +1,6 @@
 package main.service.impl;
 
+import java.util.List;
 import main.model.Product;
 import main.repository.ProductRepository;
 import main.service.ProductManager;
@@ -27,6 +28,11 @@ public class ProductManagerService implements ProductManager {
   @Override
   public String saveProduct(Product product) {
     return productRepository.save(product).getId();
+  }
+
+  @Override
+  public List<Product> getListProducts() {
+    return productRepository.findAll();
   }
 
 }
