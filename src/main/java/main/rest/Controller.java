@@ -4,6 +4,7 @@ import java.util.Map;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import main.model.List;
 import main.repository.ListRepository;
 import main.repository.ProductRepository;
 import main.service.impl.ListManagerService;
@@ -21,13 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class Controller {
 
+  //docker run --rm --name skill-mongo -p 127.0.0.1:27017:27017/tcp -d scalar4eg/skill-mongo-with-hacker
+  //http://localhost:8080/swagger-ui/index.html#/
+
   private final ProductManagerService productService;
 
   private final ListManagerService listService;
-
-  private final ListRepository listRepository;//delete
-
-  private final ProductRepository productRepository;//delete
 
   @Operation(summary = "Добавление продукта")
   @PostMapping("/product")
@@ -59,18 +59,12 @@ public class Controller {
       @RequestParam(name = "nameList") String nameList) {
 
     try {
-      String id = listService.addProductInList(nameList, nameProduct);//проверить из дома
-      return ResponseEntity.ok().body(id);//
-    } catch (Exception ex) {//
-      return ResponseEntity.status(500).body(ex.toString());//
+      String id = listService.addProductInList(nameList, nameProduct);
+      return ResponseEntity.ok().body(id);
+    } catch (Exception ex) {
+      return ResponseEntity.status(400).body(ex.toString());
     }
-//    if(result.equals("invalid name specified")){
-//      return ResponseEntity.status(500).body(result);
-//    }
-//    if(result.equals("list size is exceeded")){
-//      return ResponseEntity.status(500).body(result);
-//    }
-//    return ResponseEntity.ok().body(result);
+
   }
 
   @Operation(summary = "Получение всего списка продуктов")
@@ -82,15 +76,13 @@ public class Controller {
   @Operation(summary = "Получение списка по имени")
   @GetMapping("/list")
   public ResponseEntity<?> getList(@RequestParam(name = "name") String name) {
-    return ResponseEntity.ok().body(Map.of("list", listService.getList(name)));
-  }
+    List list = listService.getList(name);
+    if(list == null){
+      return ResponseEntity.status(400).body("There is no list with the specified name");
+    }
 
-  @GetMapping("/test")
-  public void test() {
-    //productRepository.deleteAll();
-    //listRepository.deleteAll();
-    listRepository.findAll().forEach(System.out::println);
-    productRepository.findAll().forEach(System.out::println);
+    int sumKcal = listService.countSumKcal(list);
+    return ResponseEntity.ok().body(Map.of("list", listService.getList(name), "kcal", sumKcal));
   }
 
 }

@@ -45,15 +45,17 @@ public class ListManagerService implements ListManager {
   public String addProductInList(String nameList, String nameProduct) throws Exception {
     Optional<List> listOptional = listRepository.findByName(nameList);
     Optional<Product> productOptional = productRepository.findByName(nameProduct);
-    if(listOptional.isEmpty() || productOptional.isEmpty()){
+    if (listOptional.isEmpty() || productOptional.isEmpty()) {
       throw new Exception("invalid name specified");
-      //return "invalid name specified";//исключения
     }
-    if(listRepository.findAll().size() == maxCount){
+    if (listRepository.findAll().size() == maxCount) {
       throw new Exception("list size is exceeded");
-      //return "list size is exceeded";//исключения
     }
     return addProduct(listOptional.get(), productOptional.get());
+  }
+
+  public int countSumKcal(List list) {
+    return list.getListProducts().stream().mapToInt(Product::getKcal).sum();
   }
 
   @Override
@@ -70,6 +72,7 @@ public class ListManagerService implements ListManager {
 
   @Override
   public List getList(String name) {
-    return listRepository.findByName(name).get();
+    Optional<List> optionalList = listRepository.findByName(name);
+    return optionalList.isEmpty() ? null : optionalList.get();
   }
 }
