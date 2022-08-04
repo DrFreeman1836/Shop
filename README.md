@@ -1,7 +1,7 @@
 # Shop
 
 Сервис для записи в БД списка продуктов.   
-Основной стек: Spring Boot, Swagger, MongDB.   
+Основной стек: Spring Boot, Swagger, MongoDB.   
 Базовый URL: http://localhost:8080/api/v1/shop  
   
 Документация API доступна по адресу:  
