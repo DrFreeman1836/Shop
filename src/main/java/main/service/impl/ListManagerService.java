@@ -2,6 +2,8 @@ package main.service.impl;
 
 import java.nio.charset.IllegalCharsetNameException;
 import java.util.Optional;
+
+import main.exception.ShopException;
 import main.model.List;
 import main.model.Product;
 import main.repository.ListRepository;
@@ -42,14 +44,14 @@ public class ListManagerService implements ListManager {
     return saveList(list);
   }
 
-  public String addProductInList(String nameList, String nameProduct) throws Exception {
+  public String addProductInList(String nameList, String nameProduct) throws ShopException {
     Optional<List> listOptional = listRepository.findByName(nameList);
     Optional<Product> productOptional = productRepository.findByName(nameProduct);
     if (listOptional.isEmpty() || productOptional.isEmpty()) {
-      throw new Exception("invalid name specified");
+      throw new ShopException("invalid name specified");
     }
     if (listRepository.findAll().size() == maxCount) {
-      throw new Exception("list size is exceeded");
+      throw new ShopException("list size is exceeded");
     }
     return addProduct(listOptional.get(), productOptional.get());
   }

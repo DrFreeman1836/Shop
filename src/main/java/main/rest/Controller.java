@@ -4,6 +4,7 @@ import java.util.Map;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import main.exception.ShopException;
 import main.model.List;
 import main.repository.ListRepository;
 import main.repository.ProductRepository;
@@ -61,7 +62,7 @@ public class Controller {
     try {
       String id = listService.addProductInList(nameList, nameProduct);
       return ResponseEntity.ok().body(id);
-    } catch (Exception ex) {
+    } catch (ShopException ex) {
       return ResponseEntity.status(400).body(ex.toString());
     }
 
