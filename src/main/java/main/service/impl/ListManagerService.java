@@ -1,6 +1,5 @@
 package main.service.impl;
 
-import java.nio.charset.IllegalCharsetNameException;
 import java.util.Optional;
 
 import main.exception.ShopException;
@@ -57,6 +56,9 @@ public class ListManagerService implements ListManager {
   }
 
   public int countSumKcal(List list) {
+    if(list.getListProducts() == null){
+      return 0;
+    }
     return list.getListProducts().stream().mapToInt(Product::getKcal).sum();
   }
 

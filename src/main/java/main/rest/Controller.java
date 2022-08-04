@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import main.exception.ShopException;
 import main.model.List;
-import main.repository.ListRepository;
-import main.repository.ProductRepository;
 import main.service.impl.ListManagerService;
 import main.service.impl.ProductManagerService;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/shop")
 @RequiredArgsConstructor
 public class Controller {
-
-  //docker run --rm --name skill-mongo -p 127.0.0.1:27017:27017/tcp -d scalar4eg/skill-mongo-with-hacker
-  //http://localhost:8080/swagger-ui/index.html#/
 
   private final ProductManagerService productService;
 
@@ -78,7 +73,7 @@ public class Controller {
   @GetMapping("/list")
   public ResponseEntity<?> getList(@RequestParam(name = "name") String name) {
     List list = listService.getList(name);
-    if(list == null){
+    if (list == null) {
       return ResponseEntity.status(400).body("There is no list with the specified name");
     }
 
